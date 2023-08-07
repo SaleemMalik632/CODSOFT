@@ -16,7 +16,7 @@ Model.fit(X_train , y_train)
 print(Model.predict(X_test)) 
 print(Model.score(X_test , y_test)*100)  
  
-print(Data['Gender'].array() )  
+
 
 
   
