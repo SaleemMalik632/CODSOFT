@@ -24,3 +24,4 @@ Test_text = NumText.toarray()   # again making the numrical matrix of the data
 predictions = Model.predict(Test_text)
 print(predictions)   # prediction of my model 
 print(Model.score(dense_X_test, y_test))  # Score and Accuracy of the model 
+
