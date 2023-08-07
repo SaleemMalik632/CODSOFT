@@ -12,7 +12,7 @@ X_train, X_test, y_train, y_test = train_test_split(NumericalData, Data['v1'])
 
 dense_X_train = X_train.toarray()
 # Convert X_test to dense array 
-dense_X_test = X_test.toarray()
+dense_X_test = X_test.toarray() 
 
 Model = GaussianNB()
 Model.fit(dense_X_train, y_train) 
