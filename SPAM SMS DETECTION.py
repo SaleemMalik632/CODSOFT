@@ -6,8 +6,9 @@ from sklearn.feature_extraction.text import CountVectorizer
 Data = pd.read_csv('spam.csv') # Loading CSV File 
 X = Data['v2']  
 ModelNumerical = CountVectorizer() # Making the Object od the CountVectorizer bcz NB is work on the numricall 
-NumericalData = ModelNumerical.fit_transform(X)  # A Matrix of Numrical data is Found 
-
+NumericalData = ModelNumerical.fit_transform(X)   # A Matrix of Numrical data is Found 
+print(NumericalData.getnnz()) 
+print(len(Data['v1'])) 
 # Spliting the Data in traing and testing pass 
 X_train, X_test, y_train, y_test = train_test_split(NumericalData, Data['v1']) 
 
