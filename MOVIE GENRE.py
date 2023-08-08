@@ -1,73 +1,36 @@
 import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression 
-
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import LabelEncoder
 # Define the file path
 file_path = 'Genre Classification Dataset/train_data.txt'
-
-# Read the file line by line
-train_data = []
+ 
+data = []
 with open(file_path, 'r', encoding='unicode_escape') as file:
     for line in file:
         line = line.strip()
         if line:
             parts = line.split(':::')
-            train_data.append(parts)
+            data.append(parts)
 
 # Define the column names
 columns = ['ID', 'TITLE', 'GENRE', 'DESCRIPTION']
 
-train_data = pd.DataFrame(train_data, columns=columns)
+df = pd.DataFrame(data, columns=columns)
+# Combine 'TITLE' and 'DESCRIPTION' columns into a single text column
+df['TEXT'] = df['TITLE'] + ' ' + df['DESCRIPTION'] 
 
-title = train_data['TITLE']
-description = train_data['DESCRIPTION']
+print(df['TEXT']) 
 
-
-# Combine title and description text into a single array
-text_data = title + ' ' + description 
-print(len(text_data))
-NumricalData = CountVectorizer()
-text_transformed = NumricalData.fit_transform(description)
-
-print(text_transformed.getnnz())  
-print(len(title))      
-print(len(train_data['GENRE']))
-
-# X_train, X_test, y_train, y_test = train_test_split( [[text_transformed]], train_data['GENRE'] , test_size=0.2)   
-
-# Model = LogisticRegression()
-# Model.fit(X_train , y_train) 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# # Reading the testing data 
-# path = 'Genre Classification Dataset/test_data.txt'
-# test_data = []
-# with open(path , 'r'  , encoding='unicode_escape') as file:
-#     for line in file:
-#         line = line.strip()
-#         if line:
-#             parts  = line.split(':::')
-#             test_data.append(parts) 
-
+tfidf_vectorizer = TfidfVectorizer(stop_words='english')
+X = tfidf_vectorizer.fit_transform(df['TEXT']) 
  
-# columns_ = ['ID', 'TITLE', 'DESCRIPTION']
-# test_data = pd.DataFrame(test_data , columns= columns_) 
-# print(test_data['DESCRIPTION']) 
+ 
+label_encoder = LabelEncoder()
+y = label_encoder.fit_transform(df['GENRE'])  
 
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 
 
