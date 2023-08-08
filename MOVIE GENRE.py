@@ -1,37 +1,54 @@
 import pandas as pd
+import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import LabelEncoder
-# Define the file path
-file_path = 'Genre Classification Dataset/train_data.txt'
- 
-data = []
-with open(file_path, 'r', encoding='unicode_escape') as file:
+from  sklearn.naive_bayes import GaussianNB 
+
+
+# Read and preprocess training data
+train_file_path = 'Genre Classification Dataset/train_data.txt'
+train_data = []
+with open(train_file_path, 'r', encoding='unicode_escape') as file:
     for line in file:
         line = line.strip()
         if line:
             parts = line.split(':::')
-            data.append(parts)
+            train_data.append(parts)
 
-# Define the column names
-columns = ['ID', 'TITLE', 'GENRE', 'DESCRIPTION']
-
-df = pd.DataFrame(data, columns=columns)
-# Combine 'TITLE' and 'DESCRIPTION' columns into a single text column
-df['TEXT'] = df['TITLE'] + ' ' + df['DESCRIPTION'] 
-
-print(df['TEXT']) 
+train_columns = ['ID', 'TITLE', 'GENRE', 'DESCRIPTION']
+train_df = pd.DataFrame(train_data, columns=train_columns)
+train_df['TEXT'] = train_df['TITLE'] + ' ' + train_df['DESCRIPTION']
 
 tfidf_vectorizer = TfidfVectorizer(stop_words='english')
-X = tfidf_vectorizer.fit_transform(df['TEXT']) 
- 
- 
-label_encoder = LabelEncoder()
-y = label_encoder.fit_transform(df['GENRE'])  
+X_train = tfidf_vectorizer.fit_transform(train_df['TEXT'])
+y_train = train_df['GENRE']
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train_split, X_val_split, y_train_split, y_val_split = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
 
+# Train a Logistic Regression classifier
 
+classifier = GaussianNB() 
+print('Training Model....')
+classifier.fit(X_train_split, y_train_split)
 
+# Read and preprocess test data
+test_file_path = 'Genre Classification Dataset/test_data.txt'
+test_data = []
+with open(test_file_path, 'r', encoding='unicode_escape') as file:
+    for line in file:
+        line = line.strip()
+        if line:
+            parts = line.split(':::')
+            test_data.append(parts)
 
+test_columns = ['ID', 'TITLE', 'DESCRIPTION']
+test_df = pd.DataFrame(test_data, columns=test_columns)
+test_df['TEXT'] = test_df['TITLE'] + ' ' + test_df['DESCRIPTION']
+
+X_test = tfidf_vectorizer.transform(test_df['TEXT']) 
+
+print('Predicting Data....')
+predictions = classifier.predict(X_test)
+np.printoptions(threshold=np.inf)
+print(predictions) 
