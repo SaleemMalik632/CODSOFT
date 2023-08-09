@@ -3,15 +3,13 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from  sklearn.naive_bayes import GaussianNB 
-
 
 # Read and preprocess training data
 train_file_path = 'Genre Classification Dataset/train_data.txt'
 train_data = []
 with open(train_file_path, 'r', encoding='unicode_escape') as file:
     for line in file:
-        line = line.strip()
+        line = line.strip() 
         if line:
             parts = line.split(':::')
             train_data.append(parts)
@@ -28,9 +26,9 @@ X_train_split, X_val_split, y_train_split, y_val_split = train_test_split(X_trai
 
 # Train a Logistic Regression classifier
 
-classifier = GaussianNB() 
+classifier = LogisticRegression(max_iter=1000)   
 print('Training Model....')
-classifier.fit(X_train_split, y_train_split)
+classifier.fit(X_train_split, y_train_split) 
 
 # Read and preprocess test data
 test_file_path = 'Genre Classification Dataset/test_data.txt'
@@ -49,6 +47,9 @@ test_df['TEXT'] = test_df['TITLE'] + ' ' + test_df['DESCRIPTION']
 X_test = tfidf_vectorizer.transform(test_df['TEXT']) 
 
 print('Predicting Data....')
-predictions = classifier.predict(X_test)
-np.printoptions(threshold=np.inf)
-print(predictions) 
+predictions = classifier.predict(X_test) 
+
+
+for prediction  in predictions:
+    print(prediction) 
+print(classifier.score(X_test , y_val_split))  
